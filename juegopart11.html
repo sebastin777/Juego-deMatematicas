@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Math Challenge - Competencia Animada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --azul: #4e8cff;
+            --rojo: #ff6b6b;
+            --verde: #6bff6b;
+            --amarillo: #ffde59;
+            --morado: #a459ff;
+        }
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            text-align: center;
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        h1 {
+            margin-top: 20px;
+            font-family: 'Fredoka One', cursive;
+            color: #333;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-size: 2.5rem;
+        }
+        
+        .container {
+            display: flex;
+            width: 90%;
+            justify-content: space-around;
+            margin: 20px auto;
+            flex-wrap: wrap;
+        }
+        
+        .team {
+            width: 42%;
+            min-width: 300px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            margin: 10px;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #team1 {
+            border: 4px solid var(--azul);
+        }
+        
+        #team2 {
+            border: 4px solid var(--rojo);
+        }
+        
+        .team::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--azul), var(--morado));
+            opacity: 0.7;
+        }
+        
+        .team h2 {
+            font-family: 'Fredoka One', cursive;
+            margin-top: 0;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        #team1 h2 {
+            color: var(--azul);
+        }
+        
+        #team2 h2 {
+            color: var(--rojo);
+        }
+        
+        .game {
+            margin: 20px auto;
+            padding: 25px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            border: 4px solid var(--amarillo);
+        }
+        
+        .question {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid var(--morado);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        input {
+            padding: 12px;
+            font-size: 1.3rem;
+            width: 120px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-family: 'Comic Neue', cursive;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--morado);
+            box-shadow: 0 0 0 3px rgba(164, 89, 255, 0.2);
+        }
+        
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 8px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-family: 'Comic Neue', cursive;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255,255,255,0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        .result {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(3, 70px);
+            gap: 8px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .key {
+            padding: 15px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            text-align: center;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: all 0.2s;
+            font-family: 'Comic Neue', cursive;
+            font-weight: bold;
+        }
+        
+        .key:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+        
+        .key:active {
+            transform: scale(0.95);
+            background: #d0d0d0;
+        }
+        
+        .victory {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 20px auto;
+            color: var(--morado);
+            min-height: 60px;
+            animation: bounce 1s infinite alternate;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            max-width: 80%;
+        }
+        
+        .score {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .correct {
+            color: #28a745;
+            animation: tada 1s ease;
+        }
+        
+        .incorrect {
+            color: #dc3545;
+            animation: shake 0.5s ease;
+        }
+        
+        .controls {
+            margin: 25px 0;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            animation: confetti-fall 5s linear forwards;
+        }
+        
+        .emoji-celebration {
+            font-size: 3rem;
+            position: absolute;
+            animation: float 3s ease-in-out infinite;
+            opacity: 0;
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes tada {
+            0% { transform: scale(1); }
+            10%, 20% { transform: scale(0.9) rotate(-3deg); }
+            30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
+            40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+        
+        .game-mode-btn {
+            background: linear-gradient(45deg, var(--amarillo), var(--morado));
+            color: white;
+            margin: 10px;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+        }
+        
+        .game-mode-btn:hover {
+            background: linear-gradient(45deg, var(--morado), var(--amarillo));
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, var(--azul), #59a5ff);
+            color: white;
+        }
+        
+        #team2 .submit-btn {
+            background: linear-gradient(45deg, var(--rojo), #ff8c8c);
+        }
+        
+        .reset-btn {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+        }
+        
+        .reset-btn:hover {
+            background: linear-gradient(45deg, #495057, #6c757d);
+        }
+        
+        .team-active {
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(74, 144, 226, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 144, 226, 0); }
+        }
+        
+        .turn-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            background: var(--amarillo);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            animation: bounce 1s infinite;
+            display: none;
+        }
+        
+        .progress-container {
+            width: 80%;
+            margin: 20px auto;
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--azul), var(--morado));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .team {
+                width: 90%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>✨ Juego De Matematicas By charrupi ✨</h1>
+
+    <!-- Selección del Juego -->
+    <div class="game">
+        <h2>🏆 Elige un modo de juego 🏆</h2>
+        <button class="game-mode-btn" onclick="iniciarJuego('operaciones')">🔢 Operación Rápida</button>
+        <button class="game-mode-btn" onclick="iniciarJuego('misterioso')">❓ Número Misterioso</button>
+        <button class="game-mode-btn" onclick="iniciarJuego('secuencia')">📈 Secuencia Numérica</button>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="container">
+        <!-- Equipo 1 -->
+        <div id="team1" class="team">
+            <div class="turn-indicator" id="turn1">Tu turno!</div>
+            <h2>Equipo Azul 🔵</h2>
+            <p class="score">Puntos: <span id="puntos1">0</span> 💎</p>
+            <p id="pregunta1" class="question">Haz clic en un juego para comenzar</p>
+            <div class="input-container">
+                <input type="text" id="respuesta1" readonly>
+                <div class="keyboard">
+                    <div class="key" onclick="addNumber(1, '1')">1</div>
+                    <div class="key" onclick="addNumber(1, '2')">2</div>
+                    <div class="key" onclick="addNumber(1, '3')">3</div>
+                    <div class="key" onclick="addNumber(1, '4')">4</div>
+                    <div class="key" onclick="addNumber(1, '5')">5</div>
+                    <div class="key" onclick="addNumber(1, '6')">6</div>
+                    <div class="key" onclick="addNumber(1, '7')">7</div>
+                    <div class="key" onclick="addNumber(1, '8')">8</div>
+                    <div class="key" onclick="addNumber(1, '9')">9</div>
+                    <div class="key" onclick="clearNumber(1)">⌫</div>
+                    <div class="key" onclick="addNumber(1, '0')">0</div>
+                    <div class="key" onclick="addNumber(1, '-')">-</div>
+                </div>
+                <button class="submit-btn" onclick="verificarRespuesta(1)">Responder 🚀</button>
+                <p id="resultado1" class="result">Esperando respuesta... 🤔</p>
+            </div>
+        </div>
+
+        <!-- Equipo 2 -->
+        <div id="team2" class="team">
+            <div class="turn-indicator" id="turn2">Tu turno!</div>
+            <h2>Equipo Rojo 🔴</h2>
+            <p class="score">Puntos: <span id="puntos2">0</span> 💎</p>
+            <p id="pregunta2" class="question">Haz clic en un juego para comenzar</p>
+            <div class="input-container">
+                <input type="text" id="respuesta2" readonly>
+                <div class="keyboard">
+                    <div class="key" onclick="addNumber(2, '1')">1</div>
+                    <div class="key" onclick="addNumber(2, '2')">2</div>
+                    <div class="key" onclick="addNumber(2, '3')">3</div>
+                    <div class="key" onclick="addNumber(2, '4')">4</div>
+                    <div class="key" onclick="addNumber(2, '5')">5</div>
+                    <div class="key" onclick="addNumber(2, '6')">6</div>
+                    <div class="key" onclick="addNumber(2, '7')">7</div>
+                    <div class="key" onclick="addNumber(2, '8')">8</div>
+                    <div class="key" onclick="addNumber(2, '9')">9</div>
+                    <div class="key" onclick="clearNumber(2)">⌫</div>
+                    <div class="key" onclick="addNumber(2, '0')">0</div>
+                    <div class="key" onclick="addNumber(2, '-')">-</div>
+                </div>
+                <button class="submit-btn" onclick="verificarRespuesta(2)">Responder 🚀</button>
+                <p id="resultado2" class="result">Esperando respuesta... 🤔</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="reset-btn" onclick="reiniciarJuego()" id="reiniciarBtn" disabled>🔄 Reiniciar Juego</button>
+    </div>
+
+        <p id="mensajeVictoria" class="victory"></p>
+
+    <script>
+        let puntos = {1: 0, 2: 0};
+        let preguntas = [];
+        let respuestasCorrectas = [];
+        let preguntaActual = 0;
+        let juegoActivo = false;
+        let tipoJuego = '';
+
+        function iniciarJuego(tipo) {
+            tipoJuego = tipo;
+            puntos = {1: 0, 2: 0};
+            preguntaActual = 0;
+            juegoActivo = true;
+            document.getElementById("mensajeVictoria").innerHTML = "";
+            document.getElementById("reiniciarBtn").disabled = false;
+            document.getElementById("puntos1").textContent = "0";
+            document.getElementById("puntos2").textContent = "0";
+            document.getElementById("progressBar").style.width = "0%";
+            
+            // Generar 7 preguntas según el tipo de juego
+            preguntas = [];
+            respuestasCorrectas = [];
+            
+            if (tipo === 'operaciones') {
+                for (let i = 0; i < 7; i++) {
+                    const num1 = Math.floor(Math.random() * 10) + 1;
+                    const num2 = Math.floor(Math.random() * 10) + 1;
+                    const operador = ['+', '-', '*'][Math.floor(Math.random() * 3)];
+                    let pregunta = `${num1} ${operador} ${num2} = ?`;
+                    let respuesta;
+                    
+                    switch(operador) {
+                        case '+': respuesta = num1 + num2; break;
+                        case '-': respuesta = num1 - num2; break;
+                        case '*': respuesta = num1 * num2; break;
+                    }
+                    
+                    preguntas.push(pregunta);
+                    respuestasCorrectas.push(respuesta);
+                }
+            } 
+            else if (tipo === 'misterioso') {
+                for (let i = 0; i < 7; i++) {
+                    const num1 = Math.floor(Math.random() * 10) + 1;
+                    const num2 = Math.floor(Math.random() * 10) + 1;
+                    const operador = ['+', '-'][Math.floor(Math.random() * 2)];
+                    let pregunta, respuesta;
+                    
+                    if (operador === '+') {
+                        respuesta = num1;
+                        pregunta = `? + ${num2} = ${num1 + num2}`;
+                    } else {
+                        respuesta = num1 + num2;
+                        pregunta = `? - ${num2} = ${num1}`;
+                    }
+                    
+                    preguntas.push(pregunta);
+                    respuestasCorrectas.push(respuesta);
+                }
+            } 
+            else if (tipo === 'secuencia') {
+                const patrones = [
+                    {inicio: 2, paso: 2}, // Pares
+                    {inicio: 1, paso: 2}, // Impares
+                    {inicio: 5, paso: 5}, // Múltiplos de 5
+                    {inicio: 10, paso: -1}, // Regresiva
+                    {inicio: 3, paso: 3}, // Múltiplos de 3
+                    {inicio: 1, paso: 1}, // Ascendente normal
+                    {inicio: 20, paso: -2} // Pares regresivos
+                ];
+                
+                for (let i = 0; i < 7; i++) {
+                    const patron = patrones[i];
+                    const posicionFalta = Math.floor(Math.random() * 3) + 1;
+                    let secuencia = [];
+                    
+                    for (let j = 0; j < 5; j++) {
+                        if (j === posicionFalta) {
+                            secuencia.push("?");
+                        } else {
+                            secuencia.push(patron.inicio + j * patron.paso);
+                        }
+                    }
+                    
+                    let pregunta = `Completa la secuencia: ${secuencia.join(", ")}`;
+                    let respuesta = patron.inicio + posicionFalta * patron.paso;
+                    
+                    preguntas.push(pregunta);
+                    respuestasCorrectas.push(respuesta);
+                }
+            }
+            
+            mostrarPreguntaActual();
+        }
+        
+        function mostrarPreguntaActual() {
+            if (preguntaActual < preguntas.length) {
+                document.getElementById("pregunta1").textContent = preguntas[preguntaActual];
+                document.getElementById("pregunta2").textContent = preguntas[preguntaActual];
+                document.getElementById("respuesta1").value = "";
+                document.getElementById("respuesta2").value = "";
+                document.getElementById("resultado1").textContent = "Esperando respuesta... 🤔";
+                document.getElementById("resultado1").className = "result";
+                document.getElementById("resultado2").textContent = "Esperando respuesta... 🤔";
+                document.getElementById("resultado2").className = "result";
+                document.getElementById("respuesta1").disabled = false;
+                document.getElementById("respuesta2").disabled = false;
+                document.querySelector("#team1 button").disabled = false;
+                document.querySelector("#team2 button").disabled = false;
+                
+                // Actualizar barra de progreso
+                const progreso = (preguntaActual / preguntas.length) * 100;
+                document.getElementById("progressBar").style.width = `${progreso}%`;
+            } else {
+                juegoActivo = false;
+                determinarGanador();
+            }
+        }
+
+        function verificarRespuesta(equipo) {
+            if (!juegoActivo) return;
+            
+            let respuestaInput = document.getElementById(`respuesta${equipo}`);
+            let resultadoElement = document.getElementById(`resultado${equipo}`);
+            
+            if (respuestaInput.value === "") {
+                resultadoElement.textContent = "Ingresa una respuesta";
+                resultadoElement.className = "result incorrect";
+                return;
+            }
+            
+            let respuestaUsuario = parseInt(respuestaInput.value);
+            let respuestaCorrecta = respuestasCorrectas[preguntaActual];
+            
+            if (respuestaUsuario === respuestaCorrecta) {
+                puntos[equipo]++;
+                document.getElementById(`puntos${equipo}`).textContent = puntos[equipo];
+                resultadoElement.textContent = "✅ Correcto! +1 punto";
+                resultadoElement.className = "result correct";
+                crearConfetti(equipo);
+            } else {
+                resultadoElement.textContent = `❌ Incorrecto! La respuesta era ${respuestaCorrecta}`;
+                resultadoElement.className = "result incorrect";
+            }
+            
+            // Deshabilitar más respuestas para esta pregunta
+            document.getElementById(`respuesta${equipo}`).disabled = true;
+            document.querySelector(`#team${equipo} button`).disabled = true;
+            
+            // Verificar si ambos equipos han respondido
+            let equipo1Respondio = document.getElementById("respuesta1").disabled;
+            let equipo2Respondio = document.getElementById("respuesta2").disabled;
+            
+            if (equipo1Respondio && equipo2Respondio) {
+                setTimeout(() => {
+                    preguntaActual++;
+                    mostrarPreguntaActual();
+                }, 2000);
+            }
+        }
+
+        function determinarGanador() {
+            let mensaje = "";
+            document.getElementById("progressBar").style.width = "100%";
+            
+            if (puntos[1] > puntos[2]) {
+                mensaje = "¡Equipo Azul ha ganado! 🏆";
+                document.getElementById("team1").style.backgroundColor = "#90EE90";
+                crearCelebracion(1);
+            } else if (puntos[2] > puntos[1]) {
+                mensaje = "¡Equipo Rojo ha ganado! 🏆";
+                document.getElementById("team2").style.backgroundColor = "#90EE90";
+                crearCelebracion(2);
+            } else {
+                mensaje = "¡Empate! 🤝";
+            }
+            
+            mensaje += ` (Azul: ${puntos[1]} - Rojo: ${puntos[2]})`;
+            document.getElementById("mensajeVictoria").innerHTML = mensaje;
+        }
+
+        function crearConfetti(equipo) {
+            const teamElement = document.getElementById(`team${equipo}`);
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                teamElement.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        function crearCelebracion(equipo) {
+            const teamElement = document.getElementById(`team${equipo}`);
+            const emojis = ["🎉", "🎊", "🏆", "✨", "👏", "👍", "🎈"];
+            
+            for (let i = 0; i < 10; i++) {
+                const emoji = document.createElement("div");
+                emoji.className = "emoji-celebration";
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = `${Math.random() * 80 + 10}%`;
+                emoji.style.animationDelay = `${i * 0.3}s`;
+                teamElement.appendChild(emoji);
+                setTimeout(() => emoji.remove(), 3000);
+            }
+        }
+
+        function reiniciarJuego() {
+            puntos = {1: 0, 2: 0};
+            juegoActivo = false;
+            document.getElementById("pregunta1").textContent = "Haz clic en un juego para comenzar";
+            document.getElementById("pregunta2").textContent = "Haz clic en un juego para comenzar";
+            document.getElementById("respuesta1").value = "";
+            document.getElementById("respuesta2").value = "";
+            document.getElementById("respuesta1").disabled = false;
+            document.getElementById("respuesta2").disabled = false;
+            document.getElementById("resultado1").textContent = "Esperando respuesta... 🤔";
+            document.getElementById("resultado1").className = "result";
+            document.getElementById("resultado2").textContent = "Esperando respuesta... 🤔";
+            document.getElementById("resultado2").className = "result";
+            document.getElementById("mensajeVictoria").innerHTML = "";
+            document.getElementById("puntos1").textContent = "0";
+            document.getElementById("puntos2").textContent = "0";
+            document.getElementById("team1").style.backgroundColor = "white";
+            document.getElementById("team2").style.backgroundColor = "white";
+            document.querySelector("#team1 button").disabled = false;
+            document.querySelector("#team2 button").disabled = false;
+            document.getElementById("reiniciarBtn").disabled = true;
+            document.getElementById("progressBar").style.width = "0%";
+        }
+
+        function addNumber(equipo, num) {
+            if (juegoActivo) {
+                document.getElementById(`respuesta${equipo}`).value += num;
+            }
+        }
+
+        function clearNumber(equipo) {
+            if (juegoActivo) {
+                document.getElementById(`respuesta${equipo}`).value = "";
+            }
+        }
+    </script>
+</body>
+</html>
