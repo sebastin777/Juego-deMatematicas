@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Math Challenge - Competencia Animada</title>
+    <title>Math Challenge - Competencia Animada PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -404,6 +404,90 @@
             transition: width 0.5s ease;
         }
         
+        /* Nuevos estilos para configuración de equipos */
+        .team-config {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+            border: 4px solid var(--verde);
+        }
+        
+        .team-input {
+            margin: 15px 0;
+        }
+        
+        .team-input label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .team-input input {
+            width: 80%;
+            max-width: 300px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Comic Neue', cursive;
+        }
+        
+        .team-members {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Estilos para el ranking */
+        .ranking {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+            border: 4px solid var(--morado);
+        }
+        
+        .ranking h2 {
+            color: var(--morado);
+            margin-top: 0;
+        }
+        
+        .ranking-list {
+            text-align: left;
+            margin: 0 auto;
+            width: 80%;
+        }
+        
+        .ranking-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .ranking-item:first-child {
+            font-weight: bold;
+            color: var(--morado);
+            font-size: 1.1rem;
+        }
+        
+        .ranking-item:nth-child(2) {
+            font-weight: bold;
+            color: var(--amarillo);
+        }
+        
+        .ranking-item:nth-child(3) {
+            font-weight: bold;
+            color: #aaa;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -414,18 +498,60 @@
                 margin-bottom: 20px;
             }
         }
+
+        /* Estilos para efectos de sonido */
+        .sound-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
 
-    <h1>✨ Juego De Matematicas By charrupi ✨</h1>
+    <h1>✨ Math Challenge PRO - By charrupi ✨</h1>
+
+    <!-- Control de sonido -->
+    <div class="sound-control" id="soundControl" title="Activar/Desactivar sonido">
+        🔈
+    </div>
+
+    <!-- Configuración de equipos -->
+    <div class="team-config" id="teamConfig">
+        <h2>⚙️ Configuración de Equipos ⚙️</h2>
+        <div class="team-input">
+            <label for="team1Name">Nombre del Equipo Azul:</label>
+            <input type="text" id="team1Name" placeholder="Ej: Los Matemágicos" value="Equipo Azul">
+            <div class="team-members">
+                <label>Integrantes (separados por comas):</label>
+                <input type="text" id="team1Members" placeholder="Ej: Ana, Juan, María" value="Jugador 1, Jugador 2">
+            </div>
+        </div>
+        <div class="team-input">
+            <label for="team2Name">Nombre del Equipo Rojo:</label>
+            <input type="text" id="team2Name" placeholder="Ej: Los Calculines" value="Equipo Rojo">
+            <div class="team-members">
+                <label>Integrantes (separados por comas):</label>
+                <input type="text" id="team2Members" placeholder="Ej: Pedro, Luisa, Carlos" value="Jugador 3, Jugador 4">
+            </div>
+        </div>
+        <button class="game-mode-btn" onclick="guardarConfiguracion()">Guardar Configuración ✅</button>
+    </div>
 
     <!-- Selección del Juego -->
-    <div class="game">
+    <div class="game" id="gameSelection" style="display: none;">
         <h2>🏆 Elige un modo de juego 🏆</h2>
         <button class="game-mode-btn" onclick="iniciarJuego('operaciones')">🔢 Operación Rápida</button>
         <button class="game-mode-btn" onclick="iniciarJuego('misterioso')">❓ Número Misterioso</button>
         <button class="game-mode-btn" onclick="iniciarJuego('secuencia')">📈 Secuencia Numérica</button>
+        <button class="game-mode-btn" onclick="iniciarJuego('potenciacion')">💪 Potenciación</button>
+        <button class="game-mode-btn" onclick="iniciarJuego('combinadas')">🧩 Operaciones Combinadas</button>
     </div>
 
     <div class="progress-container">
@@ -434,9 +560,9 @@
 
     <div class="container">
         <!-- Equipo 1 -->
-        <div id="team1" class="team">
+        <div id="team1" class="team" style="display: none;">
             <div class="turn-indicator" id="turn1">Tu turno!</div>
-            <h2>Equipo Azul 🔵</h2>
+            <h2 id="team1Title">Equipo Azul 🔵</h2>
             <p class="score">Puntos: <span id="puntos1">0</span> 💎</p>
             <p id="pregunta1" class="question">Haz clic en un juego para comenzar</p>
             <div class="input-container">
@@ -461,9 +587,9 @@
         </div>
 
         <!-- Equipo 2 -->
-        <div id="team2" class="team">
+        <div id="team2" class="team" style="display: none;">
             <div class="turn-indicator" id="turn2">Tu turno!</div>
-            <h2>Equipo Rojo 🔴</h2>
+            <h2 id="team2Title">Equipo Rojo 🔴</h2>
             <p class="score">Puntos: <span id="puntos2">0</span> 💎</p>
             <p id="pregunta2" class="question">Haz clic en un juego para comenzar</p>
             <div class="input-container">
@@ -492,7 +618,22 @@
         <button class="reset-btn" onclick="reiniciarJuego()" id="reiniciarBtn" disabled>🔄 Reiniciar Juego</button>
     </div>
 
-        <p id="mensajeVictoria" class="victory"></p>
+    <p id="mensajeVictoria" class="victory"></p>
+
+    <!-- Ranking de equipos -->
+    <div class="ranking" id="rankingSection" style="display: none;">
+        <h2>🏆 Ranking de Equipos 🏆</h2>
+        <div class="ranking-list" id="rankingList">
+            <!-- Aquí se generará el ranking dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Audio elements -->
+    <audio id="correctSound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
+    <audio id="wrongSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" preload="auto"></audio>
+    <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" preload="auto"></audio>
+    <audio id="startSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-suspense-waiting-668.mp3" preload="auto"></audio>
 
     <script>
         let puntos = {1: 0, 2: 0};
@@ -501,8 +642,187 @@
         let preguntaActual = 0;
         let juegoActivo = false;
         let tipoJuego = '';
+        let soundEnabled = true;
+        let teamNames = {1: "Equipo Azul", 2: "Equipo Rojo"};
+        let teamMembers = {1: [], 2: []};
+        let ranking = [];
+
+        // Base de datos de preguntas predefinidas
+        const preguntasPredefinidas = {
+            operaciones: [
+                { pregunta: "5 × 7 = ?", respuesta: 35 },
+                { pregunta: "12 + 18 = ?", respuesta: 30 },
+                { pregunta: "25 - 13 = ?", respuesta: 12 },
+                { pregunta: "8 × 6 = ?", respuesta: 48 },
+                { pregunta: "45 ÷ 9 = ?", respuesta: 5 },
+                { pregunta: "17 + 23 = ?", respuesta: 40 },
+                { pregunta: "32 - 19 = ?", respuesta: 13 }
+            ],
+            misterioso: [
+                { pregunta: "? + 7 = 15", respuesta: 8 },
+                { pregunta: "? - 5 = 12", respuesta: 17 },
+                { pregunta: "9 + ? = 21", respuesta: 12 },
+                { pregunta: "? - 8 = 25", respuesta: 33 },
+                { pregunta: "14 + ? = 30", respuesta: 16 },
+                { pregunta: "? - 15 = 20", respuesta: 35 },
+                { pregunta: "22 + ? = 40", respuesta: 18 }
+            ],
+            secuencia: [
+                { pregunta: "Completa: 2, 4, 6, ?, 10", respuesta: 8 },
+                { pregunta: "Completa: 5, 10, 15, ?, 25", respuesta: 20 },
+                { pregunta: "Completa: 3, 6, 9, ?, 15", respuesta: 12 },
+                { pregunta: "Completa: 10, 20, 30, ?, 50", respuesta: 40 },
+                { pregunta: "Completa: 7, 14, 21, ?, 35", respuesta: 28 },
+                { pregunta: "Completa: 4, 8, 12, ?, 20", respuesta: 16 },
+                { pregunta: "Completa: 6, 12, 18, ?, 30", respuesta: 24 }
+            ],
+            potenciacion: [
+                { pregunta: "2³ = ?", respuesta: 8 },
+                { pregunta: "5² = ?", respuesta: 25 },
+                { pregunta: "3⁴ = ?", respuesta: 81 },
+                { pregunta: "10² = ?", respuesta: 100 },
+                { pregunta: "4³ = ?", respuesta: 64 },
+                { pregunta: "7² = ?", respuesta: 49 },
+                { pregunta: "2⁵ = ?", respuesta: 32 }
+            ],
+            combinadas: [
+                { pregunta: "(5 + 3) × 2 = ?", respuesta: 16 },
+                { pregunta: "10 + 4 × 3 = ?", respuesta: 22 },
+                { pregunta: "20 ÷ (4 + 1) = ?", respuesta: 4 },
+                { pregunta: "3² + 4² = ?", respuesta: 25 },
+                { pregunta: "15 - (6 + 2) = ?", respuesta: 7 },
+                { pregunta: "5 × 3 + 10 ÷ 2 = ?", respuesta: 20 },
+                { pregunta: "(8 - 3)² = ?", respuesta: 25 }
+            ]
+        };
+
+        // Cargar configuración guardada si existe
+        function cargarConfiguracion() {
+            const savedConfig = localStorage.getItem('mathChallengeConfig');
+            if (savedConfig) {
+                const config = JSON.parse(savedConfig);
+                document.getElementById('team1Name').value = config.team1Name || "Equipo Azul";
+                document.getElementById('team2Name').value = config.team2Name || "Equipo Rojo";
+                document.getElementById('team1Members').value = config.team1Members || "Jugador 1, Jugador 2";
+                document.getElementById('team2Members').value = config.team2Members || "Jugador 3, Jugador 4";
+            }
+            
+            const savedRanking = localStorage.getItem('mathChallengeRanking');
+            if (savedRanking) {
+                ranking = JSON.parse(savedRanking);
+                actualizarRanking();
+            }
+        }
+
+        // Guardar configuración de equipos
+        function guardarConfiguracion() {
+            playSound('clickSound');
+            
+            teamNames[1] = document.getElementById('team1Name').value || "Equipo Azul";
+            teamNames[2] = document.getElementById('team2Name').value || "Equipo Rojo";
+            
+            const members1 = document.getElementById('team1Members').value || "Jugador 1, Jugador 2";
+            const members2 = document.getElementById('team2Members').value || "Jugador 3, Jugador 4";
+            
+            teamMembers[1] = members1.split(',').map(m => m.trim());
+            teamMembers[2] = members2.split(',').map(m => m.trim());
+            
+            // Actualizar los títulos de los equipos
+            document.getElementById('team1Title').textContent = teamNames[1] + " 🔵";
+            document.getElementById('team2Title').textContent = teamNames[2] + " 🔴";
+            
+            // Guardar en localStorage
+            const config = {
+                team1Name: teamNames[1],
+                team2Name: teamNames[2],
+                team1Members: members1,
+                team2Members: members2
+            };
+            
+            localStorage.setItem('mathChallengeConfig', JSON.stringify(config));
+            
+            // Mostrar sección de juego y ocultar configuración
+            document.getElementById('teamConfig').style.display = 'none';
+            document.getElementById('gameSelection').style.display = 'block';
+            document.getElementById('team1').style.display = 'block';
+            document.getElementById('team2').style.display = 'block';
+            document.getElementById('rankingSection').style.display = 'block';
+        }
+
+        // Actualizar el ranking
+        function actualizarRanking() {
+            const rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = '';
+            
+            if (ranking.length === 0) {
+                rankingList.innerHTML = '<p>No hay equipos en el ranking todavía.</p>';
+                return;
+            }
+            
+            // Ordenar ranking por puntos (de mayor a menor)
+            ranking.sort((a, b) => b.puntos - a.puntos);
+            
+            // Mostrar solo los top 5
+            const topRanking = ranking.slice(0, 5);
+            
+            topRanking.forEach((team, index) => {
+                const teamElement = document.createElement('div');
+                teamElement.className = 'ranking-item';
+                
+                const nameElement = document.createElement('span');
+                nameElement.textContent = `${index + 1}. ${team.nombre}`;
+                
+                const pointsElement = document.createElement('span');
+                pointsElement.textContent = `${team.puntos} puntos`;
+                
+                teamElement.appendChild(nameElement);
+                teamElement.appendChild(pointsElement);
+                rankingList.appendChild(teamElement);
+            });
+        }
+
+        // Añadir equipo al ranking
+        function agregarAlRanking(nombreEquipo, puntosEquipo) {
+            // Verificar si el equipo ya está en el ranking
+            const existingTeamIndex = ranking.findIndex(team => team.nombre === nombreEquipo);
+            
+            if (existingTeamIndex !== -1) {
+                // Actualizar puntos si son mayores
+                if (puntosEquipo > ranking[existingTeamIndex].puntos) {
+                    ranking[existingTeamIndex].puntos = puntosEquipo;
+                }
+            } else {
+                // Añadir nuevo equipo
+                ranking.push({
+                    nombre: nombreEquipo,
+                    puntos: puntosEquipo,
+                    fecha: new Date().toLocaleDateString()
+                });
+            }
+            
+            // Guardar en localStorage
+            localStorage.setItem('mathChallengeRanking', JSON.stringify(ranking));
+            
+            // Actualizar visualización
+            actualizarRanking();
+        }
+
+        // Control de sonido
+        document.getElementById('soundControl').addEventListener('click', function() {
+            soundEnabled = !soundEnabled;
+            this.textContent = soundEnabled ? '🔊' : '🔈';
+            if (soundEnabled) playSound('clickSound');
+        });
+
+        function playSound(soundId) {
+            if (!soundEnabled) return;
+            const sound = document.getElementById(soundId);
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log("Error al reproducir sonido:", e));
+        }
 
         function iniciarJuego(tipo) {
+            playSound('startSound');
             tipoJuego = tipo;
             puntos = {1: 0, 2: 0};
             preguntaActual = 0;
@@ -513,80 +833,121 @@
             document.getElementById("puntos2").textContent = "0";
             document.getElementById("progressBar").style.width = "0%";
             
-            // Generar 7 preguntas según el tipo de juego
-            preguntas = [];
-            respuestasCorrectas = [];
-            
-            if (tipo === 'operaciones') {
-                for (let i = 0; i < 7; i++) {
-                    const num1 = Math.floor(Math.random() * 10) + 1;
-                    const num2 = Math.floor(Math.random() * 10) + 1;
-                    const operador = ['+', '-', '*'][Math.floor(Math.random() * 3)];
-                    let pregunta = `${num1} ${operador} ${num2} = ?`;
-                    let respuesta;
-                    
-                    switch(operador) {
-                        case '+': respuesta = num1 + num2; break;
-                        case '-': respuesta = num1 - num2; break;
-                        case '*': respuesta = num1 * num2; break;
-                    }
-                    
-                    preguntas.push(pregunta);
-                    respuestasCorrectas.push(respuesta);
-                }
-            } 
-            else if (tipo === 'misterioso') {
-                for (let i = 0; i < 7; i++) {
-                    const num1 = Math.floor(Math.random() * 10) + 1;
-                    const num2 = Math.floor(Math.random() * 10) + 1;
-                    const operador = ['+', '-'][Math.floor(Math.random() * 2)];
-                    let pregunta, respuesta;
-                    
-                    if (operador === '+') {
-                        respuesta = num1;
-                        pregunta = `? + ${num2} = ${num1 + num2}`;
-                    } else {
-                        respuesta = num1 + num2;
-                        pregunta = `? - ${num2} = ${num1}`;
-                    }
-                    
-                    preguntas.push(pregunta);
-                    respuestasCorrectas.push(respuesta);
-                }
-            } 
-            else if (tipo === 'secuencia') {
-                const patrones = [
-                    {inicio: 2, paso: 2}, // Pares
-                    {inicio: 1, paso: 2}, // Impares
-                    {inicio: 5, paso: 5}, // Múltiplos de 5
-                    {inicio: 10, paso: -1}, // Regresiva
-                    {inicio: 3, paso: 3}, // Múltiplos de 3
-                    {inicio: 1, paso: 1}, // Ascendente normal
-                    {inicio: 20, paso: -2} // Pares regresivos
-                ];
+            // Usar preguntas predefinidas o generar aleatorias según el modo
+            if (preguntasPredefinidas[tipo]) {
+                preguntas = preguntasPredefinidas[tipo].map(q => q.pregunta);
+                respuestasCorrectas = preguntasPredefinidas[tipo].map(q => q.respuesta);
+            } else {
+                preguntas = [];
+                respuestasCorrectas = [];
                 
-                for (let i = 0; i < 7; i++) {
-                    const patron = patrones[i];
-                    const posicionFalta = Math.floor(Math.random() * 3) + 1;
-                    let secuencia = [];
-                    
-                    for (let j = 0; j < 5; j++) {
-                        if (j === posicionFalta) {
-                            secuencia.push("?");
-                        } else {
-                            secuencia.push(patron.inicio + j * patron.paso);
+                if (tipo === 'operaciones') {
+                    for (let i = 0; i < 7; i++) {
+                        const num1 = Math.floor(Math.random() * 10) + 1;
+                        const num2 = Math.floor(Math.random() * 10) + 1;
+                        const operador = ['+', '-', '*'][Math.floor(Math.random() * 3)];
+                        let pregunta = `${num1} ${operador} ${num2} = ?`;
+                        let respuesta;
+                        
+                        switch(operador) {
+                            case '+': respuesta = num1 + num2; break;
+                            case '-': respuesta = num1 - num2; break;
+                            case '*': respuesta = num1 * num2; break;
                         }
+                        
+                        preguntas.push(pregunta);
+                        respuestasCorrectas.push(respuesta);
+                    }
+                } 
+                else if (tipo === 'misterioso') {
+                    for (let i = 0; i < 7; i++) {
+                        const num1 = Math.floor(Math.random() * 10) + 1;
+                        const num2 = Math.floor(Math.random() * 10) + 1;
+                        const operador = ['+', '-'][Math.floor(Math.random() * 2)];
+                        let pregunta, respuesta;
+                        
+                        if (operador === '+') {
+                            respuesta = num1;
+                            pregunta = `? + ${num2} = ${num1 + num2}`;
+                        } else {
+                            respuesta = num1 + num2;
+                            pregunta = `? - ${num2} = ${num1}`;
+                        }
+                        
+                        preguntas.push(pregunta);
+                        respuestasCorrectas.push(respuesta);
+                    }
+                } 
+                else if (tipo === 'secuencia') {
+                    const patrones = [
+                        {inicio: 2, paso: 2}, // Pares
+                        {inicio: 1, paso: 2}, // Impares
+                        {inicio: 5, paso: 5}, // Múltiplos de 5
+                        {inicio: 10, paso: -1}, // Regresiva
+                        {inicio: 3, paso: 3}, // Múltiplos de 3
+                        {inicio: 1, paso: 1}, // Ascendente normal
+                        {inicio: 20, paso: -2} // Pares regresivos
+                    ];
+                    
+                    for (let i = 0; i < 7; i++) {
+                        const patron = patrones[i];
+                        const posicionFalta = Math.floor(Math.random() * 3) + 1;
+                        let secuencia = [];
+                        
+                        for (let j = 0; j < 5; j++) {
+                            if (j === posicionFalta) {
+                                secuencia.push("?");
+                            } else {
+                                secuencia.push(patron.inicio + j * patron.paso);
+                            }
+                        }
+                        
+                        let pregunta = `Completa la secuencia: ${secuencia.join(", ")}`;
+                        let respuesta = patron.inicio + posicionFalta * patron.paso;
+                        
+                        preguntas.push(pregunta);
+                        respuestasCorrectas.push(respuesta);
+                    }
+                }
+                else if (tipo === 'potenciacion') {
+                    for (let i = 0; i < 7; i++) {
+                        const base = Math.floor(Math.random() * 5) + 2;
+                        const exponente = Math.floor(Math.random() * 3) + 2;
+                        let pregunta = `${base}${getSuperScript(exponente)} = ?`;
+                        let respuesta = Math.pow(base, exponente);
+                        
+                        preguntas.push(pregunta);
+                        respuestasCorrectas.push(respuesta);
+                    }
+                }
+                else if (tipo === 'combinadas') {
+                    const operaciones = [
+                        { pregunta: "(5 + 3) × 2 = ?", respuesta: 16 },
+                        { pregunta: "10 + 4 × 3 = ?", respuesta: 22 },
+                        { pregunta: "20 ÷ (4 + 1) = ?", respuesta: 4 },
+                        { pregunta: "3² + 4² = ?", respuesta: 25 },
+                        { pregunta: "15 - (6 + 2) = ?", respuesta: 7 },
+                        { pregunta: "5 × 3 + 10 ÷ 2 = ?", respuesta: 20 },
+                        { pregunta: "(8 - 3)² = ?", respuesta: 25 }
+                    ];
+                    
+                    // Mezclar las operaciones
+                    for (let i = operaciones.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [operaciones[i], operaciones[j]] = [operaciones[j], operaciones[i]];
                     }
                     
-                    let pregunta = `Completa la secuencia: ${secuencia.join(", ")}`;
-                    let respuesta = patron.inicio + posicionFalta * patron.paso;
-                    
-                    preguntas.push(pregunta);
-                    respuestasCorrectas.push(respuesta);
+                    preguntas = operaciones.slice(0, 7).map(op => op.pregunta);
+                    respuestasCorrectas = operaciones.slice(0, 7).map(op => op.respuesta);
                 }
             }
             
             mostrarPreguntaActual();
+        }
+        
+        function getSuperScript(num) {
+            const superscripts = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
+            return num.toString().split('').map(d => superscripts[parseInt(d)]).join('');
         }
         
         function mostrarPreguntaActual() {
@@ -616,6 +977,8 @@
         function verificarRespuesta(equipo) {
             if (!juegoActivo) return;
             
+            playSound('clickSound');
+            
             let respuestaInput = document.getElementById(`respuesta${equipo}`);
             let resultadoElement = document.getElementById(`resultado${equipo}`);
             
@@ -634,9 +997,11 @@
                 resultadoElement.textContent = "✅ Correcto! +1 punto";
                 resultadoElement.className = "result correct";
                 crearConfetti(equipo);
+                playSound('correctSound');
             } else {
                 resultadoElement.textContent = `❌ Incorrecto! La respuesta era ${respuestaCorrecta}`;
                 resultadoElement.className = "result incorrect";
+                playSound('wrongSound');
             }
             
             // Deshabilitar más respuestas para esta pregunta
@@ -660,18 +1025,22 @@
             document.getElementById("progressBar").style.width = "100%";
             
             if (puntos[1] > puntos[2]) {
-                mensaje = "¡Equipo Azul ha ganado! 🏆";
+                mensaje = `¡${teamNames[1]} ha ganado! 🏆`;
                 document.getElementById("team1").style.backgroundColor = "#90EE90";
                 crearCelebracion(1);
+                playSound('winSound');
+                agregarAlRanking(teamNames[1], puntos[1]);
             } else if (puntos[2] > puntos[1]) {
-                mensaje = "¡Equipo Rojo ha ganado! 🏆";
+                mensaje = `¡${teamNames[2]} ha ganado! 🏆`;
                 document.getElementById("team2").style.backgroundColor = "#90EE90";
                 crearCelebracion(2);
+                playSound('winSound');
+                agregarAlRanking(teamNames[2], puntos[2]);
             } else {
                 mensaje = "¡Empate! 🤝";
             }
             
-            mensaje += ` (Azul: ${puntos[1]} - Rojo: ${puntos[2]})`;
+            mensaje += ` (${teamNames[1]}: ${puntos[1]} - ${teamNames[2]}: ${puntos[2]})`;
             document.getElementById("mensajeVictoria").innerHTML = mensaje;
         }
 
@@ -704,6 +1073,7 @@
         }
 
         function reiniciarJuego() {
+            playSound('clickSound');
             puntos = {1: 0, 2: 0};
             juegoActivo = false;
             document.getElementById("pregunta1").textContent = "Haz clic en un juego para comenzar";
@@ -725,19 +1095,29 @@
             document.querySelector("#team2 button").disabled = false;
             document.getElementById("reiniciarBtn").disabled = true;
             document.getElementById("progressBar").style.width = "0%";
+            
+            // Mostrar selección de juego nuevamente
+            document.getElementById('gameSelection').style.display = 'block';
         }
 
         function addNumber(equipo, num) {
             if (juegoActivo) {
+                playSound('clickSound');
                 document.getElementById(`respuesta${equipo}`).value += num;
             }
         }
 
         function clearNumber(equipo) {
             if (juegoActivo) {
+                playSound('clickSound');
                 document.getElementById(`respuesta${equipo}`).value = "";
             }
         }
+
+        // Inicializar la configuración al cargar la página
+        window.onload = function() {
+            cargarConfiguracion();
+        };
     </script>
 </body>
 </html>
